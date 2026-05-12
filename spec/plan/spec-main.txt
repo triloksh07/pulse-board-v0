@@ -1,0 +1,623 @@
+You are a senior full-stack architect and engineer.
+
+Your task is to help build a production-style MERN application called:
+
+# PulseBoard
+
+A realtime polling, feedback, and quiz platform.
+
+The application must be designed like a real SaaS product with scalable architecture, clean code organization, strong UX, realtime functionality, and production-grade backend patterns.
+
+====================================================
+
+# PRODUCT OVERVIEW
+
+====================================================
+
+PulseBoard allows users to:
+
+- create polls and quizzes
+- share them publicly via links and QR codes
+- collect anonymous or authenticated responses
+- view realtime analytics dashboards
+- run live quizzes with leaderboards
+- publish final results publicly
+
+This is NOT a simple CRUD app.
+
+The focus is:
+
+- realtime systems
+- analytics
+- product thinking
+- scalable architecture
+- polished frontend experience
+
+====================================================
+
+# TECH STACK
+
+====================================================
+
+# Frontend
+
+- React + Vite
+- React Router
+- TailwindCSS
+- shadcn/ui
+- Zustand
+- React Hook Form
+- Zod
+- Axios
+- Socket.io Client
+
+# Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- bcrypt
+- Socket.io
+- Zod/Joi validation
+
+# Deployment
+
+- Frontend: Vercel
+- Backend: Render/Railway
+- Database: MongoDB Atlas
+
+====================================================
+
+# CORE PRODUCT MODES
+
+====================================================
+
+The platform supports 2 modes:
+
+## 1. Poll Mode
+
+Used for:
+
+- feedback
+- surveys
+- voting
+- classroom interaction
+
+## 2. Quiz Mode
+
+Used for:
+
+- live quizzes
+- contests
+- assessments
+- trivia
+
+DO NOT create separate architectures for both.
+
+Use a unified Poll schema with:
+
+type:
+
+- "poll"
+- "quiz"
+
+====================================================
+
+# AUTHENTICATION SYSTEM
+
+====================================================
+
+Implement:
+
+- Register
+- Login
+- Logout
+- Current User API
+
+Use:
+
+- JWT
+- HttpOnly cookies
+
+Passwords must be hashed using bcrypt.
+
+Protected routes required.
+
+====================================================
+
+# USER ROLES
+
+====================================================
+
+Initially:
+
+- Host
+- Participant
+
+A host can:
+
+- create polls/quizzes
+- edit them
+- view analytics
+- publish results
+
+Participants can:
+
+- answer polls/quizzes
+
+====================================================
+
+# POLL / QUIZ FEATURES
+
+====================================================
+
+Each poll/quiz must support:
+
+- title
+- description
+- expiry datetime
+- anonymous or authenticated responses
+- single choice questions
+- multiple choice questions
+- mandatory or optional questions
+- realtime updates
+- result publishing
+
+====================================================
+
+# QUESTION SYSTEM
+
+====================================================
+
+Each question supports:
+
+- questionText
+- options[]
+- required
+- allowMultiple
+- points
+- correctAnswers[]
+
+Support:
+
+- single choice
+- multiple choice
+
+====================================================
+
+# QUIZ FEATURES
+
+====================================================
+
+Quiz mode additionally supports:
+
+- scoring
+- correctness evaluation
+- leaderboard
+- completion time tracking
+
+Leaderboard ranking priority:
+
+1. Higher score
+2. Faster completion time
+3. Earlier submission
+
+====================================================
+
+# REALTIME FEATURES
+
+====================================================
+
+Use Socket.io.
+
+Implement realtime support for:
+
+- live response count
+- analytics updates
+- leaderboard updates
+- poll status updates
+- quiz live rankings
+
+Create socket rooms:
+
+poll:<pollId>
+
+DO NOT mix socket logic randomly into controllers.
+
+Create dedicated socket handlers.
+
+====================================================
+
+# QR CODE SHARING
+
+====================================================
+
+Each poll/quiz must support:
+
+- public shareable link
+- downloadable QR code
+
+QR code should encode:
+
+- poll public URL
+- quiz public URL
+
+Add:
+
+- "Copy Link" button
+- "Download QR" button
+- QR preview modal/card
+
+Recommended:
+
+- Generate QR on frontend using library
+  OR
+- Generate QR server-side if necessary
+
+====================================================
+
+# POLL STATES
+
+====================================================
+
+Poll lifecycle:
+
+draft
+→ active
+→ expired
+→ published
+
+Published means:
+
+- results visible publicly
+- leaderboard visible publicly
+- analytics frozen
+
+====================================================
+
+# RESPONSE MODES
+
+====================================================
+
+Support:
+
+## Anonymous
+
+Anyone can answer.
+
+## Authenticated
+
+User must login before answering.
+
+====================================================
+
+# ANALYTICS DASHBOARD
+
+====================================================
+
+Hosts should see:
+
+- total responses
+- participation count
+- completion rate
+- question-wise analytics
+- option counts
+- response percentages
+- average score
+- highest score
+- leaderboard
+- participation timeline
+
+Analytics should update realtime using sockets.
+
+====================================================
+
+# FRONTEND REQUIREMENTS
+
+====================================================
+
+Use modern SaaS UI patterns.
+
+The frontend must feel:
+
+- polished
+- interactive
+- responsive
+- realtime
+
+Pages required:
+
+# Public Pages
+
+- Landing Page
+- Login
+- Register
+- Public Poll
+- Public Quiz
+- Published Results
+
+# Protected Pages
+
+- Dashboard
+- Create Poll
+- Edit Poll
+- Analytics Dashboard
+
+====================================================
+
+# FRONTEND STRUCTURE
+
+====================================================
+
+Use this structure:
+
+src/
+│
+├── app/
+├── pages/
+├── components/
+├── features/
+├── hooks/
+├── services/
+├── store/
+├── utils/
+├── layouts/
+
+====================================================
+
+# BACKEND STRUCTURE
+
+====================================================
+
+Use modular backend architecture:
+
+server/
+│
+├── src/
+│
+├── config/
+├── modules/
+│ ├── auth/
+│ ├── polls/
+│ ├── responses/
+│ ├── analytics/
+│ ├── leaderboard/
+│
+├── middleware/
+├── sockets/
+├── utils/
+
+====================================================
+
+# DATABASE DESIGN
+
+====================================================
+
+# Users Collection
+
+{
+name,
+email,
+password,
+avatar
+}
+
+# Polls Collection
+
+{
+title,
+description,
+type,
+shareCode,
+createdBy,
+status,
+responseMode,
+expiresAt,
+published,
+showLeaderboard,
+realtimeEnabled,
+questions[]
+}
+
+# Questions Structure
+
+{
+questionText,
+required,
+allowMultiple,
+points,
+options[],
+correctAnswers[]
+}
+
+# Responses Collection
+
+{
+pollId,
+userId,
+answers[],
+score,
+completionTime,
+submittedAt
+}
+
+====================================================
+
+# API REQUIREMENTS
+
+====================================================
+
+# Auth APIs
+
+POST /api/auth/register
+POST /api/auth/login
+GET /api/auth/me
+
+# Poll APIs
+
+POST /api/polls
+GET /api/polls/:id
+PATCH /api/polls/:id
+DELETE /api/polls/:id
+PATCH /api/polls/:id/publish
+
+# Response APIs
+
+POST /api/responses/:pollId
+GET /api/responses/:pollId
+
+# Analytics APIs
+
+GET /api/analytics/:pollId
+
+# Leaderboard APIs
+
+GET /api/leaderboard/:pollId
+
+====================================================
+
+# SOCKET EVENTS
+
+====================================================
+
+Client → Server:
+
+- join_poll
+- submit_response
+- request_leaderboard
+
+Server → Client:
+
+- response_count_updated
+- analytics_updated
+- leaderboard_updated
+- poll_expired
+- poll_published
+
+====================================================
+
+# SECURITY REQUIREMENTS
+
+====================================================
+
+Implement:
+
+- JWT validation
+- protected APIs
+- backend validation
+- rate limiting
+- CORS handling
+- secure cookies
+- input sanitization
+
+DO NOT trust frontend validation alone.
+
+====================================================
+
+# VALIDATION RULES
+
+====================================================
+
+Poll validation:
+
+- minimum 1 question
+- minimum 2 options/question
+- expiry date must be future
+
+Response validation:
+
+- required questions mandatory
+- valid option IDs only
+- expired polls blocked
+
+====================================================
+
+# PERFORMANCE REQUIREMENTS
+
+====================================================
+
+Optimize:
+
+- MongoDB queries
+- analytics aggregation
+- socket payload sizes
+- frontend rerenders
+
+Avoid:
+
+- recalculating entire analytics repeatedly
+- sending huge payloads over sockets
+
+====================================================
+
+# UI/UX REQUIREMENTS
+
+====================================================
+
+The UI should resemble a modern SaaS dashboard.
+
+Focus heavily on:
+
+- dashboard polish
+- analytics visuals
+- realtime interactions
+- clean forms
+- responsive design
+
+Use:
+
+- cards
+- charts
+- loaders
+- skeletons
+- empty states
+- toasts
+
+====================================================
+
+# ENGINEERING RULES
+
+====================================================
+
+- Use clean architecture
+- Avoid monolithic files
+- Separate business logic from controllers
+- Use reusable components
+- Use modular services
+- Avoid deeply nested state chaos
+- Use proper naming conventions
+- Write scalable folder structures
+
+====================================================
+
+# IMPORTANT IMPLEMENTATION NOTES
+
+====================================================
+
+- Build incrementally
+- Do not overengineer
+- Prioritize working realtime systems
+- Prioritize clean UX over unnecessary features
+- Maintain product-level polish
+- Ensure responsive layout
+- Ensure architecture is hackathon-demo ready
+
+====================================================
+
+# OUTPUT EXPECTATIONS
+
+====================================================
+
+While generating code or architecture:
+
+- explain reasoning
+- generate scalable code
+- avoid shortcuts
+- avoid fake implementations
+- avoid placeholder architecture
+- prioritize maintainability
+
+The final application should feel like:
+“A real realtime polling & live quiz SaaS product.”
