@@ -1,13 +1,46 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
-const optionSchema = new mongoose.Schema(
+export interface IOption {
+  id: string;
+  text: string;
+}
+
+export interface IQuestion {
+  id: string;
+  questionText: string;
+  options: IOption[];
+  required: boolean;
+  allowMultiple: boolean;
+  points?: number;
+  correctAnswers?: string[];
+}
+
+export interface IPoll extends Document {
+  title: string;
+  description: string;
+  type: "poll" | "quiz";
+  shareCode: string;
+  createdBy: mongoose.Types.ObjectId;
+  status: "draft" | "active" | "expired" | "published";
+  responseMode: "anonymous" | "authenticated";
+  allowMultipleResponses?: boolean;
+  expiresAt?: Date;
+  published: boolean;
+  showLeaderboard: boolean;
+  realtimeEnabled: boolean;
+  questions: IQuestion[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const optionSchema = new mongoose.Schema<IOption>(
   {
     text: { type: String, required: true, trim: true, maxlength: 240 },
   },
   { _id: true }
 );
 
-const questionSchema = new mongoose.Schema(
+const questionSchema = new mongoose.Schema<IQuestion>(
   {
     questionText: { type: String, required: true, trim: true, maxlength: 500 },
     required: { type: Boolean, default: true },
@@ -25,20 +58,34 @@ const questionSchema = new mongoose.Schema(
   { _id: true }
 );
 
-const pollSchema = new mongoose.Schema(
+const pollSchema = new mongoose.Schema<IPoll>(
   {
     title: { type: String, required: true, trim: true, maxlength: 160 },
     description: { type: String, default: "", trim: true, maxlength: 1200 },
-    type: { type: String, enum: ["poll", "quiz"], default: "poll", required: true },
+    type: {
+      type: String,
+      enum: ["poll", "quiz"],
+      default: "poll",
+      required: true,
+    },
     shareCode: { type: String, required: true, unique: true, index: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     status: {
       type: String,
       enum: ["draft", "active", "expired", "published"],
       default: "active",
       index: true,
     },
-    responseMode: { type: String, enum: ["anonymous", "authenticated"], default: "anonymous" },
+    responseMode: {
+      type: String,
+      enum: ["anonymous", "authenticated"],
+      default: "anonymous",
+    },
     allowMultipleResponses: { type: Boolean, default: false },
     showLeaderboard: { type: Boolean, default: true },
     realtimeEnabled: { type: Boolean, default: true },
@@ -57,4 +104,4 @@ const pollSchema = new mongoose.Schema(
 
 pollSchema.index({ createdBy: 1, createdAt: -1 });
 
-export const Poll = mongoose.model("Poll", pollSchema);
+export const Poll = mongoose.model<IPoll>("Poll", pollSchema);

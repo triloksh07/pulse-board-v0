@@ -1,8 +1,21 @@
 import { Router } from "express";
 import { requireAuth } from "../../middleware/auth.middleware.js";
 import { validate } from "../../middleware/validate.middleware.js";
-import { createPollSchema, pollIdSchema, shareCodeSchema, updatePollSchema } from "./poll.validation.js";
-import { create, destroy, index, publish, show, showByShareCode, update } from "./poll.controller.js";
+import {
+  createPollSchema,
+  pollIdSchema,
+  shareCodeSchema,
+  updatePollSchema,
+} from "./poll.validation.js";
+import {
+  create,
+  destroy,
+  index,
+  publish,
+  show,
+  showByShareCode,
+  update,
+} from "./poll.controller.js";
 
 const router = Router();
 

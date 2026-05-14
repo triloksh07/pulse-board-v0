@@ -2,13 +2,19 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { env } from "../../config/env.js";
 import { HttpError } from "../../utils/httpError.js";
+import { signToken, verifyToken } from "../../utils/jwt.js ";
 import { User } from "./user.model.js";
+import { hashPassword, verifyPassword } from "../../utils/password.js";
 
-function signToken(user) {
-  return jwt.sign({ sub: user._id.toString(), email: user.email }, env.jwtSecret, {
-    expiresIn: "7d",
-  });
-}
+// function signToken(user) {
+//   return jwt.sign(
+//     { sub: user._id.toString(), email: user.email },
+//     env.jwtSecret,
+//     {
+//       expiresIn: "7d",
+//     }
+//   );
+// }
 
 function serializeUser(user) {
   return {
@@ -27,7 +33,7 @@ export async function registerUser(input) {
     throw new HttpError(409, "Email is already registered");
   }
 
-  const password = await bcrypt.hash(input.password, 12);
+  const password = await hashPassword(input.password);
   const user = await User.create({ ...input, password });
 
   return {
@@ -43,7 +49,7 @@ export async function loginUser(input) {
     throw new HttpError(401, "Invalid email or password");
   }
 
-  const matches = await bcrypt.compare(input.password, user.password);
+  const matches = await verifyPassword(input.password, user.password);
 
   if (!matches) {
     throw new HttpError(401, "Invalid email or password");
