@@ -1,14 +1,8 @@
-import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 
 export function useCurrentUser() {
-  const { user, ready, loadUser } = useAuthStore();
-
-  useEffect(() => {
-    if (!ready) {
-      loadUser();
-    }
-  }, [ready, loadUser]);
+  const user = useAuthStore((state) => state.user);
+  const ready = useAuthStore((state) => state.ready);
 
   return { user, ready };
 }

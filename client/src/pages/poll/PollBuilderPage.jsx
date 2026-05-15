@@ -9,14 +9,16 @@ import { api, apiError } from "../../services/api";
 
 function objectId() {
   const bytes = crypto.getRandomValues(new Uint8Array(12));
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
+    ""
+  );
 }
 
 function defaultQuestion(type = "poll") {
   const optionA = objectId();
   const optionB = objectId();
   return {
-    _id: objectId(),
+    // _id: objectId(),
     questionText: "",
     required: true,
     allowMultiple: false,
@@ -30,7 +32,9 @@ function defaultQuestion(type = "poll") {
 }
 
 function emptyPoll() {
-  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
+  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 16);
   return {
     title: "",
     description: "",
@@ -95,7 +99,9 @@ export function PollBuilderPage() {
           ? {
               ...question,
               options: question.options.map((option, currentOptionIndex) =>
-                currentOptionIndex === optionIndex ? { ...option, text } : option
+                currentOptionIndex === optionIndex
+                  ? { ...option, text }
+                  : option
               ),
             }
           : question
@@ -107,7 +113,12 @@ export function PollBuilderPage() {
     setPoll((current) => ({
       ...current,
       questions: current.questions.map((question, index) =>
-        index === questionIndex ? { ...question, options: [...question.options, { _id: objectId(), text: "" }] } : question
+        index === questionIndex
+          ? {
+              ...question,
+              options: [...question.options, { _id: objectId(), text: "" }],
+            }
+          : question
       ),
     }));
   }
@@ -119,8 +130,12 @@ export function PollBuilderPage() {
         index === questionIndex
           ? {
               ...question,
-              options: question.options.filter((option) => option._id !== optionId),
-              correctAnswers: question.correctAnswers.filter((id) => id !== optionId),
+              options: question.options.filter(
+                (option) => option._id !== optionId
+              ),
+              correctAnswers: question.correctAnswers.filter(
+                (id) => id !== optionId
+              ),
             }
           : question
       ),
@@ -152,7 +167,9 @@ export function PollBuilderPage() {
     };
 
     try {
-      const { data } = editing ? await api.patch(`/polls/${id}`, payload) : await api.post("/polls", payload);
+      const { data } = editing
+        ? await api.patch(`/polls/${id}`, payload)
+        : await api.post("/polls", payload);
       setSavedPoll(data.poll);
       if (!editing) {
         navigate(`/poll/${data.poll._id}/edit`);
@@ -183,10 +200,18 @@ export function PollBuilderPage() {
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
       <form className="space-y-6" onSubmit={submit}>
         <div>
-          <h1 className="text-3xl font-black text-ink">{editing ? "Edit board" : "Create board"}</h1>
-          <p className="mt-1 text-slate-500">Build a realtime poll or quiz with shareable public access.</p>
+          <h1 className="text-3xl font-black text-ink">
+            {editing ? "Edit board" : "Create board"}
+          </h1>
+          <p className="mt-1 text-slate-500">
+            Build a realtime poll or quiz with shareable public access.
+          </p>
         </div>
-        {error ? <p className="rounded-md bg-red-50 p-3 text-sm font-semibold text-coral">{error}</p> : null}
+        {error ? (
+          <p className="rounded-md bg-red-50 p-3 text-sm font-semibold text-coral">
+            {error}
+          </p>
+        ) : null}
 
         <Card>
           <CardHeader>
@@ -194,7 +219,13 @@ export function PollBuilderPage() {
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2">
             <Field label="Title">
-              <Input value={poll.title} onChange={(event) => setPoll({ ...poll, title: event.target.value })} required />
+              <Input
+                value={poll.title}
+                onChange={(event) =>
+                  setPoll({ ...poll, title: event.target.value })
+                }
+                required
+              />
             </Field>
             <Field label="Mode">
               <Select
@@ -205,7 +236,10 @@ export function PollBuilderPage() {
                     type: event.target.value,
                     questions: poll.questions.map((question) => ({
                       ...question,
-                      points: event.target.value === "quiz" ? question.points || 1 : 0,
+                      points:
+                        event.target.value === "quiz"
+                          ? question.points || 1
+                          : 0,
                     })),
                   })
                 }
@@ -215,17 +249,33 @@ export function PollBuilderPage() {
               </Select>
             </Field>
             <Field label="Description">
-              <Textarea value={poll.description} onChange={(event) => setPoll({ ...poll, description: event.target.value })} />
+              <Textarea
+                value={poll.description}
+                onChange={(event) =>
+                  setPoll({ ...poll, description: event.target.value })
+                }
+              />
             </Field>
             <div className="grid gap-4">
               <Field label="Response mode">
-                <Select value={poll.responseMode} onChange={(event) => setPoll({ ...poll, responseMode: event.target.value })}>
+                <Select
+                  value={poll.responseMode}
+                  onChange={(event) =>
+                    setPoll({ ...poll, responseMode: event.target.value })
+                  }
+                >
                   <option value="anonymous">Anonymous</option>
                   <option value="authenticated">Authenticated</option>
                 </Select>
               </Field>
               <Field label="Expires at">
-                <Input type="datetime-local" value={poll.expiresAt} onChange={(event) => setPoll({ ...poll, expiresAt: event.target.value })} />
+                <Input
+                  type="datetime-local"
+                  value={poll.expiresAt}
+                  onChange={(event) =>
+                    setPoll({ ...poll, expiresAt: event.target.value })
+                  }
+                />
               </Field>
             </div>
           </CardContent>
@@ -234,12 +284,21 @@ export function PollBuilderPage() {
         {poll.questions.map((question, questionIndex) => (
           <Card key={question._id || questionIndex}>
             <CardHeader className="flex flex-row items-center justify-between">
-              <h2 className="font-bold text-ink">Question {questionIndex + 1}</h2>
+              <h2 className="font-bold text-ink">
+                Question {questionIndex + 1}
+              </h2>
               {poll.questions.length > 1 ? (
                 <Button
                   type="button"
                   variant="ghost"
-                  onClick={() => setPoll({ ...poll, questions: poll.questions.filter((_, index) => index !== questionIndex) })}
+                  onClick={() =>
+                    setPoll({
+                      ...poll,
+                      questions: poll.questions.filter(
+                        (_, index) => index !== questionIndex
+                      ),
+                    })
+                  }
                 >
                   <Trash2 size={16} />
                 </Button>
@@ -249,7 +308,11 @@ export function PollBuilderPage() {
               <Field label="Question text">
                 <Input
                   value={question.questionText}
-                  onChange={(event) => updateQuestion(questionIndex, { questionText: event.target.value })}
+                  onChange={(event) =>
+                    updateQuestion(questionIndex, {
+                      questionText: event.target.value,
+                    })
+                  }
                   required
                 />
               </Field>
@@ -258,7 +321,11 @@ export function PollBuilderPage() {
                   <input
                     type="checkbox"
                     checked={question.required}
-                    onChange={(event) => updateQuestion(questionIndex, { required: event.target.checked })}
+                    onChange={(event) =>
+                      updateQuestion(questionIndex, {
+                        required: event.target.checked,
+                      })
+                    }
                   />
                   Required
                 </label>
@@ -266,7 +333,12 @@ export function PollBuilderPage() {
                   <input
                     type="checkbox"
                     checked={question.allowMultiple}
-                    onChange={(event) => updateQuestion(questionIndex, { allowMultiple: event.target.checked, correctAnswers: [] })}
+                    onChange={(event) =>
+                      updateQuestion(questionIndex, {
+                        allowMultiple: event.target.checked,
+                        correctAnswers: [],
+                      })
+                    }
                   />
                   Multiple choice
                 </label>
@@ -276,17 +348,30 @@ export function PollBuilderPage() {
                       type="number"
                       min="0"
                       value={question.points}
-                      onChange={(event) => updateQuestion(questionIndex, { points: event.target.value })}
+                      onChange={(event) =>
+                        updateQuestion(questionIndex, {
+                          points: event.target.value,
+                        })
+                      }
                     />
                   </Field>
                 ) : null}
               </div>
               <div className="space-y-3">
                 {question.options.map((option, optionIndex) => (
-                  <div key={option._id} className="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+                  <div
+                    key={option._id}
+                    className="grid grid-cols-[1fr_auto_auto] items-center gap-2"
+                  >
                     <Input
                       value={option.text}
-                      onChange={(event) => updateOption(questionIndex, optionIndex, event.target.value)}
+                      onChange={(event) =>
+                        updateOption(
+                          questionIndex,
+                          optionIndex,
+                          event.target.value
+                        )
+                      }
                       placeholder={`Option ${optionIndex + 1}`}
                       required
                     />
@@ -296,20 +381,34 @@ export function PollBuilderPage() {
                           type={question.allowMultiple ? "checkbox" : "radio"}
                           name={`correct-${questionIndex}`}
                           checked={question.correctAnswers.includes(option._id)}
-                          onChange={() => toggleCorrect(questionIndex, option._id, question.allowMultiple)}
+                          onChange={() =>
+                            toggleCorrect(
+                              questionIndex,
+                              option._id,
+                              question.allowMultiple
+                            )
+                          }
                         />
                         Correct
                       </label>
                     ) : null}
                     {question.options.length > 2 ? (
-                      <Button type="button" variant="ghost" onClick={() => removeOption(questionIndex, option._id)}>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => removeOption(questionIndex, option._id)}
+                      >
                         <Trash2 size={15} />
                       </Button>
                     ) : null}
                   </div>
                 ))}
               </div>
-              <Button type="button" variant="secondary" onClick={() => addOption(questionIndex)}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => addOption(questionIndex)}
+              >
                 <Plus size={16} /> Option
               </Button>
             </CardContent>
@@ -317,7 +416,16 @@ export function PollBuilderPage() {
         ))}
 
         <div className="flex flex-wrap gap-3">
-          <Button type="button" variant="secondary" onClick={() => setPoll({ ...poll, questions: [...poll.questions, defaultQuestion(poll.type)] })}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() =>
+              setPoll({
+                ...poll,
+                questions: [...poll.questions, defaultQuestion(poll.type)],
+              })
+            }
+          >
             <Plus size={16} /> Question
           </Button>
           <Button>
@@ -334,29 +442,54 @@ export function PollBuilderPage() {
           <CardContent className="space-y-4">
             {shareUrl ? (
               <>
-                <div className="rounded-md bg-slate-50 p-3 text-sm font-semibold text-slate-600 break-all">{shareUrl}</div>
+                <div className="rounded-md bg-slate-50 p-3 text-sm font-semibold text-slate-600 break-all">
+                  {shareUrl}
+                </div>
                 <div className="grid place-items-center rounded-md border border-slate-200 p-4">
-                  <QRCodeCanvas id="share-qr" value={shareUrl} size={180} includeMargin />
+                  <QRCodeCanvas
+                    id="share-qr"
+                    value={shareUrl}
+                    size={180}
+                    includeMargin
+                  />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button type="button" variant="secondary" onClick={() => navigator.clipboard?.writeText(shareUrl)}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => navigator.clipboard?.writeText(shareUrl)}
+                  >
                     <Copy size={16} /> Copy
                   </Button>
-                  <Button type="button" variant="secondary" onClick={downloadQr}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={downloadQr}
+                  >
                     Download QR
                   </Button>
                 </div>
-                <Button type="button" onClick={publish} variant={savedPoll?.published ? "secondary" : "primary"}>
+                <Button
+                  type="button"
+                  onClick={publish}
+                  variant={savedPoll?.published ? "secondary" : "primary"}
+                >
                   {savedPoll?.published ? "Published" : "Publish results"}
                 </Button>
                 {savedPoll?.published ? (
-                  <Button as={Link} to={`/results/${savedPoll.shareCode}`} variant="secondary">
+                  <Button
+                    as={Link}
+                    to={`/results/${savedPoll.shareCode}`}
+                    variant="secondary"
+                  >
                     View results
                   </Button>
                 ) : null}
               </>
             ) : (
-              <p className="text-sm text-slate-500">Save the board to generate a public link and QR code.</p>
+              <p className="text-sm text-slate-500">
+                Save the board to generate a public link and QR code.
+              </p>
             )}
           </CardContent>
         </Card>

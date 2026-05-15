@@ -4,26 +4,32 @@ import { api } from "../services/api";
 export const useAuthStore = create((set) => ({
   user: null,
   ready: false,
-  async loadUser() {
+  loadUser: async () => {
     try {
       const { data } = await api.get("/auth/me");
-      set({ user: data.user, ready: true });
-    } catch {
+      console.log(data.data.user);
+      set({ user: data.data?.user, ready: true });
+    } catch (error) {
       set({ user: null, ready: true });
     }
   },
-  async login(input) {
+  login: async (input) => {
     const { data } = await api.post("/auth/login", input);
-    set({ user: data.user, ready: true });
-    return data.user;
+    const userData = data.data?.user;
+    set({ user: userData, ready: true });
+    return userData;
   },
-  async register(input) {
+  register: async (input) => {
     const { data } = await api.post("/auth/register", input);
+    const userData = data.data?.user;
     set({ user: data.user, ready: true });
-    return data.user;
+    return userData;
   },
-  async logout() {
-    await api.post("/auth/logout");
-    set({ user: null, ready: true });
+  logout: async () => {
+    try {
+      await api.post("/auth/logout");
+    } finally {
+      set({ user: null, ready: true });
+    }
   },
 }));

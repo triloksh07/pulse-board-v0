@@ -1,11 +1,14 @@
 import { Response } from "express";
-import { isProduction } from "../config/env.js";
+import { isProduction, env } from "../config/env.js";
 
 export function setAuthCookie(res: Response, token: string): void {
+
+  const isLocal = env.clientUrl.includes("localhost");
+
   res.cookie("pulseboard_token", token, {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "strict" : "lax",
+    secure: isProduction && !isLocal,
+    sameSite: isProduction && !isLocal ? "strict" : "lax",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 }

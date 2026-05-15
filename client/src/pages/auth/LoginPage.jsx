@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RadioTower } from "lucide-react";
 import { Button } from "../../components/ui/Button";
@@ -10,9 +10,16 @@ import { useAuthStore } from "../../store/authStore";
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const login = useAuthStore((state) => state.login);
+  // const login = useAuthStore((state) => state.login);
+  const { user, login, ready } = useAuthStore();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (ready && user) {
+      navigate(location.state?.from || "/dashboard", { replace: true });
+    }
+  }, [user, ready, navigate, location]);
 
   async function submit(event) {
     event.preventDefault();
@@ -34,21 +41,36 @@ export function LoginPage() {
               <RadioTower />
             </span>
             <h1 className="text-2xl font-black text-ink">Welcome back</h1>
-            <p className="text-sm text-slate-500">Run live polls and quizzes from your dashboard.</p>
+            <p className="text-sm text-slate-500">
+              Run live polls and quizzes from your dashboard.
+            </p>
           </div>
           <form className="space-y-4" onSubmit={submit}>
             <Field label="Email">
-              <Input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} required />
+              <Input
+                type="email"
+                value={form.email}
+                onChange={(event) =>
+                  setForm({ ...form, email: event.target.value })
+                }
+                required
+              />
             </Field>
             <Field label="Password">
               <Input
                 type="password"
                 value={form.password}
-                onChange={(event) => setForm({ ...form, password: event.target.value })}
+                onChange={(event) =>
+                  setForm({ ...form, password: event.target.value })
+                }
                 required
               />
             </Field>
-            {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-coral">{error}</p> : null}
+            {error ? (
+              <p className="rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-coral">
+                {error}
+              </p>
+            ) : null}
             <Button className="w-full">Login</Button>
           </form>
           <p className="text-center text-sm text-slate-500">
