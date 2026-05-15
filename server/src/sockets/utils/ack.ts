@@ -1,4 +1,4 @@
-import { AckResponse } from "../types";
+import { AckResponse } from "../types.js";
 
 export const ackSuccess = <T>(
   cb?: (response: AckResponse<T>) => void,

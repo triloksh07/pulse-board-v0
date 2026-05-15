@@ -29,13 +29,13 @@ export const registerPollHandlers = (io: Server, socket: Socket) => {
         //   }
         // );
 
-        io.to(room).emit(
-          "analytics:updated",
-          {
-            pollId: "abc123456789",
-            test: true,
-          }
-        );
+        // socket.to(room).emit(
+        //   "analytics:updated",
+        //   {
+        //     pollId: "abc123456789",
+        //     test: true,
+        //   }
+        // );
 
         console.log(`Socket ${socket.id} joined ${room}`);
 

@@ -1,18 +1,18 @@
 import mongoose, { Document } from "mongoose";
 
 export interface IOption {
-  id: string;
+  _id?: mongoose.Types.ObjectId;
   text: string;
 }
 
 export interface IQuestion {
-  id: string;
+  _id?: mongoose.Types.ObjectId;
   questionText: string;
   options: IOption[];
   required: boolean;
   allowMultiple: boolean;
   points?: number;
-  correctAnswers?: string[];
+  correctAnswers?: mongoose.Types.ObjectId[];
 }
 
 export interface IPoll extends Document {
@@ -49,7 +49,7 @@ const questionSchema = new mongoose.Schema<IQuestion>(
     options: {
       type: [optionSchema],
       validate: {
-        validator: (options) => options.length >= 2,
+        validator: (options: IOption[]) => options.length >= 2,
         message: "Each question must have at least 2 options",
       },
     },
@@ -94,7 +94,7 @@ const pollSchema = new mongoose.Schema<IPoll>(
     questions: {
       type: [questionSchema],
       validate: {
-        validator: (questions) => questions.length >= 1,
+        validator: (questions: IQuestion[]) => questions.length >= 1,
         message: "Poll must include at least 1 question",
       },
     },

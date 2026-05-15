@@ -57,3 +57,6 @@ export const pollIdSchema = z.object({
 export const shareCodeSchema = z.object({
   params: z.object({ shareCode: z.string().min(4).max(24) }),
 });
+
+export type CreatePollInput = z.infer<typeof createPollSchema>["body"];
+export type UpdatePollInput = z.infer<typeof updatePollSchema>["body"];

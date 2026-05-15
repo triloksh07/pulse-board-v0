@@ -21,3 +21,5 @@ export const submitResponseSchema = z.object({
 export const pollIdSchema = z.object({
   params: z.object({ pollId: objectId }),
 });
+
+export type SubmitResponsePayload = z.infer<typeof submitResponseSchema>["body"];

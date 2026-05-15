@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 
-import { SOCKET_EVENTS } from "../events";
-import { rooms } from "../rooms";
+import { SOCKET_EVENTS } from "../events.js";
+import { rooms } from "../rooms.js";
 
 export const emitPollPublished = (
   io: Server,
@@ -25,16 +25,13 @@ export const emitPollExpired = (
   );
 };
 
-export const emitResponseCountUpdated = (
+export const emitResponseCountUpdated = async (
   io: Server,
   pollId: string,
   totalResponses: number
 ) => {
-  io.to(rooms.poll(pollId)).emit(
-    SOCKET_EVENTS.RESPONSE_COUNT_UPDATED,
-    {
-      pollId,
-      totalResponses,
-    }
-  );
+  io.to(rooms.poll(pollId)).emit(SOCKET_EVENTS.RESPONSE_COUNT_UPDATED, {
+    pollId,
+    totalResponses,
+  });
 };

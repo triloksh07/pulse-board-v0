@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
-import { env } from "../config/env";
-import { registerPollHandlers } from "./handlers/poll.handlers";
-import { registerLeaderboardHandlers } from "./handlers/leaderboard.handlers";
+import { env } from "../config/env.js";
+import { registerPollHandlers } from "./handlers/poll.handlers.js";
+import { registerLeaderboardHandlers } from "./handlers/leaderboard.handlers.js";
 
 export const initSockets = (httpServer: any) => {
   const io = new Server(httpServer, {
@@ -25,4 +25,3 @@ export const initSockets = (httpServer: any) => {
 
   return io;
 };
-

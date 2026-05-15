@@ -1,22 +1,10 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { env } from "../../config/env.js";
 import { HttpError } from "../../utils/httpError.js";
-import { signToken, verifyToken } from "../../utils/jwt.js ";
+import { signToken } from "../../utils/jwt.js";
 import { User } from "./user.model.js";
 import { hashPassword, verifyPassword } from "../../utils/password.js";
+import { RegisterInput, LoginInput } from "./auth.validation.js";
 
-// function signToken(user) {
-//   return jwt.sign(
-//     { sub: user._id.toString(), email: user.email },
-//     env.jwtSecret,
-//     {
-//       expiresIn: "7d",
-//     }
-//   );
-// }
-
-function serializeUser(user) {
+function serializeUser(user: any) {
   return {
     id: user._id,
     name: user.name,
@@ -26,7 +14,7 @@ function serializeUser(user) {
   };
 }
 
-export async function registerUser(input) {
+export async function registerUser(input: RegisterInput) {
   const existing = await User.findOne({ email: input.email });
 
   if (existing) {
@@ -38,11 +26,11 @@ export async function registerUser(input) {
 
   return {
     user: serializeUser(user),
-    token: signToken(user),
+    token: signToken({ sub: user._id.toString(), email: user.email }),
   };
 }
 
-export async function loginUser(input) {
+export async function loginUser(input: LoginInput) {
   const user = await User.findOne({ email: input.email }).select("+password");
 
   if (!user) {
@@ -57,7 +45,7 @@ export async function loginUser(input) {
 
   return {
     user: serializeUser(user),
-    token: signToken(user),
+    token: signToken({ sub: user._id.toString(), email: user.email }),
   };
 }
 

@@ -1,7 +1,7 @@
-// import type { Response, CookieOptions } from "express";
+import { Response } from "express";
 import { isProduction } from "../config/env.js";
 
-export function setAuthCookie(res, token) {
+export function setAuthCookie(res: Response, token: string): void {
   res.cookie("pulseboard_token", token, {
     httpOnly: true,
     secure: isProduction,
@@ -10,7 +10,7 @@ export function setAuthCookie(res, token) {
   });
 }
 
-export function clearAuthCookie(res) {
+export function clearAuthCookie(res: Response): void {
   res.clearCookie("pulseboard_token", {
     httpOnly: true,
     secure: isProduction,

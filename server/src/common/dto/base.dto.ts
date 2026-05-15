@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { z, ZodSchema } from "zod";
 
 class BaseDto {
-  static schema = z.object({});
+  static schema: ZodSchema = z.object({});
 
-  static validate(data) {
+  static validate<T>(this: { schema: ZodSchema<T> }, data: unknown): { errors: string[] | null; value: T | null } {
     const result = this.schema.safeParse(data);
 
     if (!result.success) {

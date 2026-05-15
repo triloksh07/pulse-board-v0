@@ -1,4 +1,5 @@
-// utils/password.ts
+// @ts-expect-erro
+// @ts-ignore
 import bcrypt from "bcryptjs";
 
 export async function hashPassword(plain: string) {

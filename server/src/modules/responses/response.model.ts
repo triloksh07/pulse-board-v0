@@ -1,8 +1,8 @@
 import mongoose, { Document } from "mongoose";
 
 export interface IAnswer {
-  questionId: string | any;
-  selectedOptions: string[];
+  questionId: mongoose.Types.ObjectId;
+  selectedOptions: mongoose.Types.ObjectId[];
 }
 
 export interface IResponse extends Document {
