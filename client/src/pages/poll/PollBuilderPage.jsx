@@ -57,6 +57,8 @@ export function PollBuilderPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    console.log("useEffect triggered with editing on builder page:", editing, "id:", id);
+
     if (!editing) {
       return;
     }
@@ -64,6 +66,10 @@ export function PollBuilderPage() {
     api
       .get(`/polls/${id}`)
       .then(({ data }) => {
+
+        console.log("poll builder data.poll: ", data.poll);
+        console.log("poll builder data.poll: ", data.poll);
+
         setPoll({
           ...data.poll,
           expiresAt: new Date(data.poll.expiresAt).toISOString().slice(0, 16),
@@ -116,7 +122,7 @@ export function PollBuilderPage() {
         index === questionIndex
           ? {
               ...question,
-              options: [...question.options, { _id: objectId(), text: "" }],
+              options: [...question.options, { id: objectId(), text: "" }],
             }
           : question
       ),
@@ -131,7 +137,7 @@ export function PollBuilderPage() {
           ? {
               ...question,
               options: question.options.filter(
-                (option) => option._id !== optionId
+                (option) => option.id !== optionId
               ),
               correctAnswers: question.correctAnswers.filter(
                 (id) => id !== optionId
@@ -282,7 +288,7 @@ export function PollBuilderPage() {
         </Card>
 
         {poll.questions.map((question, questionIndex) => (
-          <Card key={question._id || questionIndex}>
+          <Card key={question.id || questionIndex}>
             <CardHeader className="flex flex-row items-center justify-between">
               <h2 className="font-bold text-ink">
                 Question {questionIndex + 1}
@@ -360,7 +366,7 @@ export function PollBuilderPage() {
               <div className="space-y-3">
                 {question.options.map((option, optionIndex) => (
                   <div
-                    key={option._id}
+                    key={option.id}
                     className="grid grid-cols-[1fr_auto_auto] items-center gap-2"
                   >
                     <Input
@@ -380,11 +386,11 @@ export function PollBuilderPage() {
                         <input
                           type={question.allowMultiple ? "checkbox" : "radio"}
                           name={`correct-${questionIndex}`}
-                          checked={question.correctAnswers.includes(option._id)}
+                          checked={question.correctAnswers.includes(option.id)}
                           onChange={() =>
                             toggleCorrect(
                               questionIndex,
-                              option._id,
+                              option.id,
                               question.allowMultiple
                             )
                           }
@@ -396,7 +402,7 @@ export function PollBuilderPage() {
                       <Button
                         type="button"
                         variant="ghost"
-                        onClick={() => removeOption(questionIndex, option._id)}
+                        onClick={() => removeOption(questionIndex, option.id)}
                       >
                         <Trash2 size={15} />
                       </Button>

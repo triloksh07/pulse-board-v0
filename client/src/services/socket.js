@@ -8,6 +8,10 @@ export function getSocket() {
       withCredentials: true,
       autoConnect: true,
     });
+
+    socket.on("error", (err) => {
+      console.error("Socket Error:", err.message);
+    });
   }
 
   return socket;
