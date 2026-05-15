@@ -26,7 +26,6 @@ export function LoginPage() {
     setError("");
     try {
       await login(form);
-      navigate(location.state?.from || "/dashboard");
     } catch (err) {
       setError(apiError(err));
     }

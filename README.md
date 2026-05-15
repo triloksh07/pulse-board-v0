@@ -1,14 +1,76 @@
 # PulseBoard
 
-PulseBoard is a production-style MERN SaaS app for realtime polls, feedback forms, and live quizzes.
+Realtime poll & quiz platform with live analytics, public sharing, QR access, and websocket-powered updates.
+
+## Live Demo
+
+Frontend:
+https://pulse-board-client.vercel.app
+
+Backend API:
+https://pulse-board-api.onrender.com
+
+## Core Features
+
+- Realtime polls & quizzes
+- Public share links
+- QR code sharing
+- Live analytics dashboard
+- WebSocket powered updates
+- Authentication with HTTP-only cookies
+- Public/private poll flows
+- Poll publishing system
+- Anonymous responses
+- Quiz support with scoring
+- Responsive dashboard UI
 
 ## Stack
 
 - React + Vite + TailwindCSS
-- Zustand, React Hook Form, Zod, Axios, Socket.io client
-- Node.js, Express, MongoDB, Mongoose
+- Zustand, React Hook Form, React Router, Zod, Axios, Socket.io client
+- Node.js, Express, MongoDB
 - JWT auth with HttpOnly cookies
-- Socket.io realtime rooms
+- Socket.io
+
+### Deployment
+
+- Vercel (frontend)
+- Render (backend)
+- MongoDB Atlas
+
+## Socket Events
+
+### Client Events
+
+| Event       | Payload      |
+| ----------- | ------------ |
+| `poll:join` | `{ pollId }` |
+
+### Server Events
+
+| Event          | Payload                    |
+| -------------- | -------------------------- |
+| `poll:updated` | realtime analytics payload |
+
+## Architecture
+
+PulseBoard follows a separated frontend/backend architecture:
+
+- Frontend handles realtime UI, routing, and dashboard experience
+- Backend exposes REST APIs and Socket.IO realtime events
+- MongoDB stores polls, responses, and analytics
+- Public share codes provide anonymous participation access
+
+## Future Improvements
+
+- Leaderboards
+- Poll scheduling
+- Team collaboration
+- Advanced analytics
+- Redis caching
+- Rate limiting improvements
+- Better optimistic UI updates
+- Realtime participant counters
 
 ## Setup
 
@@ -21,17 +83,6 @@ npm run dev
 
 Frontend runs on `http://localhost:5173`.
 Backend runs on `http://localhost:5000`.
-
-## Core Features
-
-- Register, login, logout, current-user auth
-- Create polls or quizzes with one shared schema
-- Anonymous or authenticated public response links
-- Required questions, single choice, and multiple choice
-- Quiz scoring and leaderboard ranking
-- Realtime response counts, analytics, and leaderboard updates
-- Published result pages
-- QR code sharing from the frontend
 
 ## Environment
 
